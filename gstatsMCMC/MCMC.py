@@ -805,7 +805,7 @@ class chain_crf(chain):
         loss_data_cache = np.zeros(n_iter)
         loss_cache = np.zeros(n_iter)
         step_cache = np.zeros(n_iter)
-        if ~only_save_last_bed:
+        if not only_save_last_bed:
             bed_cache = np.zeros((n_iter, self.xx.shape[0], self.xx.shape[1]))
         blocks_cache = np.full((n_iter, 4), np.nan)
         resampled_times = np.zeros(self.xx.shape)
@@ -823,7 +823,7 @@ class chain_crf(chain):
         loss_data_cache[0] = loss_prev_data
         loss_mc_cache[0] = loss_prev_mc
         step_cache[0] = False
-        if ~only_save_last_bed:
+        if not only_save_last_bed:
             bed_cache[0] = bed_c
         
         #crf_weight = self.crf_data_weight
@@ -917,13 +917,13 @@ class chain_crf(chain):
                 loss_data_cache[i] = loss_prev_data
                 step_cache[i] = False
             
-            if ~only_save_last_bed:
+            if not only_save_last_bed:
                 bed_cache[i,:,:] = bed_c
 
             if i%info_per_iter == 0:
                 print(f'i: {i} mc loss: {loss_mc_cache[i]:.3e} data loss: {loss_data_cache[i]:.3e} loss: {loss_cache[i]:.3e} acceptance rate: {np.sum(step_cache)/(i+1)}')
                 
-        if ~only_save_last_bed:
+        if not only_save_last_bed:
             return bed_cache, loss_mc_cache, loss_data_cache, loss_cache, step_cache, resampled_times, blocks_cache
         else:
             return bed_c, loss_mc_cache, loss_data_cache, loss_cache, step_cache, resampled_times, blocks_cache
@@ -1103,7 +1103,7 @@ class chain_sgs(chain):
         loss_mc_cache = np.zeros(n_iter)
         loss_data_cache = np.zeros(n_iter)
         step_cache = np.zeros(n_iter)
-        if ~only_save_last_bed:
+        if not only_save_last_bed:
             bed_cache = np.zeros((n_iter, rows, cols))
         blocks_cache = np.full((n_iter, 4), np.nan)
         
@@ -1151,7 +1151,7 @@ class chain_sgs(chain):
         loss_mc_cache[0] = loss_prev_mc
         loss_data_cache[0] = loss_prev_data
         step_cache[0] = False
-        if ~only_save_last_bed:
+        if not only_save_last_bed:
             bed_cache[0] = bed_c
         
         for i in range(n_iter):
@@ -1266,7 +1266,7 @@ class chain_sgs(chain):
                 loss_data_cache[i] = loss_prev_data
                 step_cache[i] = False
 
-            if ~only_save_last_bed:
+            if not only_save_last_bed:
                 if self.detrend_map == True:
                     bed_cache[i,:,:] = bed_c + self.trend
                 else:
@@ -1282,7 +1282,7 @@ class chain_sgs(chain):
         else:
             last_bed = bed_c
 
-        if ~only_save_last_bed:
+        if not only_save_last_bed:
             return bed_cache, loss_mc_cache, loss_data_cache, loss_cache, step_cache, resampled_times, blocks_cache
         else:
             return last_bed, loss_mc_cache, loss_data_cache, loss_cache, step_cache, resampled_times, blocks_cache

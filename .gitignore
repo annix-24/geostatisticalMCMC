@@ -11,3 +11,4 @@ gstatsMCMC/.ipynb_checkpoints/
 *.txt
 T3_LargeScaleChain_badexample.ipynb
 *.csv
+dontsave.ipynb
