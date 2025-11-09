@@ -16,6 +16,8 @@ import gstatsim as gs
 import gstools as gstools
 import skgstat as skg
 from skgstat import models
+from tqdm.notebook import tqdm
+from IPython import display
 
 from . import Topography
 
@@ -846,7 +848,7 @@ class chain_crf(chain):
         crf_weight, dist, dist_rescale, dist_logi = RF.get_crf_weight(self.xx,self.yy,self.data_mask)
         self.crf_data_weight = crf_weight
 
-    def run(self, n_iter, RF, rng_seed=None, only_save_last_bed=False, info_per_iter = 1000):
+    def run(self, n_iter, RF, rng_seed=None, only_save_last_bed=False, info_per_iter = 1000, plot=True):
         """Runs the MCMC sampling chain to generate topography realizations.
 
         Args:
@@ -905,7 +907,36 @@ class chain_crf(chain):
         
         #crf_weight = self.crf_data_weight
 
-        for i in range(1,n_iter):
+        pbar = tqdm(range(1,n_iter))
+
+        if plot:
+            fig, (ax_loss, ax_acc) = plt.subplots(1, 2, figsize=(12,5))
+            (line_loss,) = ax_loss.plot([], [], color='tab:blue', label='Loss')
+            (line_acc,)  = ax_acc.plot([], [], color='tab:green', label='Acceptance Rate')
+            #NOTE use get_mass_conservation_residual on BedMachine data
+            # bm_loss = 
+            # ax_loss.axhline(bm_loss, ls='--', label='BedMachine loss') 
+            
+            ax_loss.set_xlabel("Iteration")
+            ax_loss.set_ylabel("Loss")
+            ax_loss.set_title("MCMC Loss")
+
+            ax_acc.set_xlabel("Iteration")
+            ax_acc.set_ylabel("Acceptance Rate (%)")
+            ax_acc.set_ylim(0, 100)
+            ax_acc.set_title("MCMC Acceptance Rate")
+
+            ax_loss.legend()
+            ax_acc.legend()
+            
+            display_handle = display.display(fig, display_id=True)
+            plt.tight_layout()
+
+            # Track acceptance rate
+            accepted_count = 0
+            acceptance_rates = []
+
+        for i in pbar:
                         
             #not done yet
             f = RF.get_rfblock()
@@ -987,6 +1018,8 @@ class chain_crf(chain):
                     resampled_times[bxmin:bxmax,bymin:bymax] += self.region_mask[bxmin:bxmax,bymin:bymax]
                 else:
                     resampled_times[bxmin:bxmax,bymin:bymax] += self.grounded_ice_mask[bxmin:bxmax,bymin:bymax]
+
+                accepted_count += 1
                 
             else:
                 loss_mc_cache[i] = loss_prev_mc
@@ -997,8 +1030,42 @@ class chain_crf(chain):
             if not only_save_last_bed:
                 bed_cache[i,:,:] = bed_c
 
+            ''' Original progress bar
             if i%info_per_iter == 0:
                 print(f'i: {i} mc loss: {loss_mc_cache[i]:.3e} data loss: {loss_data_cache[i]:.3e} loss: {loss_cache[i]:.3e} acceptance rate: {np.sum(step_cache)/(i+1)}')
+            '''
+
+            # Update tqdm progress bar
+            pbar.set_postfix({
+                'mc loss'   :   f'{loss_mc_cache[i]:.3e}',
+                'data loss' :   f'{loss_data_cache[i]:.3e}',
+                'loss'      :   f'{loss_cache[i]:.3e}',
+                'acceptance rate'   :   f'{np.sum(step_cache)/(i+1):.6f}'
+            })
+
+            # Calculate acceptance rate for plot
+            total_acceptance = (accepted_count / (i + 1)) * 100
+            acceptance_rates.append(total_acceptance)
+
+            if plot:
+                if i < 5000:
+                    update_interval = 100
+                else:
+                    update_interval = info_per_iter
+
+                if i % update_interval == 0:
+                    # Update loss line
+                    line_loss.set_data(range(i + 1), loss_cache[:i + 1])
+                    ax_loss.relim()
+                    ax_loss.autoscale_view()
+
+                    # Update acceptance rate line
+                    line_acc.set_data(range(len(acceptance_rates)), acceptance_rates)
+                    ax_acc.set_ylim(0, 100)
+                    ax_acc.relim()
+                    ax_acc.autoscale_view()
+
+                    display_handle.update(fig)
                 
         if not only_save_last_bed:
             return bed_cache, loss_mc_cache, loss_data_cache, loss_cache, step_cache, resampled_times, blocks_cache
