@@ -26,3 +26,4 @@ Please see gstatsMCMC.MCMC.html for documentation for MCMC.py
 - Niya Shao
 - Michael Field
 - Emma MacKie
+- Sean Hamilton
