@@ -27,3 +27,4 @@ Please see gstatsMCMC.MCMC.html for documentation for MCMC.py
 - Michael Field
 - Emma MacKie
 - Sean Hamilton
+- Tien (Tyler) Le
