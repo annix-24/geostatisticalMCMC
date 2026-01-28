@@ -5,15 +5,12 @@ __pycache__/
 .virtual_documents
 DenmanDataGridded.csv
 sgs_bed.txt
+sgs_bed_denman.txt
 gstatsMCMC/__pycache__/
 gstatsMCMC/.ipynb_checkpoints/
 *.txt
-T3_LargeScaleChain_badexample.ipynb
 *.csv
-dontsave.ipynb
-T2_StatisticalAnalysis-Copy1.ipyn
-T3_LargeScaleChain-Copy1.ipynb
-testSpectral.ipynb
 visualization.ipynb
-T2_StatisticalAnalysis-Copy1.ipynb
-T4_SmallScaleChain (1).ipynb
+test.ipynb
+test2.py
+.gitignore
