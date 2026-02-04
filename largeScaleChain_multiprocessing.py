@@ -578,12 +578,11 @@ if __name__=='__main__':
     
     largeScaleChain.set_random_generator(rng_seed = rng_seed)
     
-    ## TODO: change to different initial bed
-    #initial_beds = []
-    #for i in range(n_chains):
-    #    sgs_bed = np.loadtxt('Denman_sgs_bed_'+str(i)+'.txt')
-    #    initial_beds.append(sgs_bed)
-    initial_beds = np.array([sgs_bed] * n_chains) # np.repeat(sgs_bed, n_chains)
+    initial_beds = []
+    for i in range(n_chains):
+        sgs_bed = np.loadtxt('Denman_sgs_bed_'+str(i)+'.txt')
+        initial_beds.append(sgs_bed)
+    #initial_beds = np.array([sgs_bed] * n_chains) # np.repeat(sgs_bed, n_chains)
     
     with open(Path(seed_file_path), 'r') as f:
         lines = f.readlines()

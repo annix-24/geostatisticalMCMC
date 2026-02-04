@@ -569,7 +569,6 @@ if __name__ == '__main__':
         ss_seed = ssc_rng_seeds[j]
         ss_seed_folder = ss_chain_folder / f'{str(ss_seed)[:6]}'
         ss_seed_folder.mkdir(parents=True, exist_ok=True)
-    
 
     # fill in a list of initial_beds to be used for each chain
     # the list length should be equal to number of chains
