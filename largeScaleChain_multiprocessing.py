@@ -611,7 +611,14 @@ if __name__=='__main__':
     
     # Use the offset to select the appropriate seeds for the large scale chain
     selected_rng_seeds = rng_seeds[offset_idx:min(offset_idx + n_chains, len(rng_seeds[:-n_chains]))]
-          
-    n_iters = [n_iter]*n_chains
 
-    result = largeScaleChain_mp(n_chains, n_workers, largeScaleChain, rf1, initial_beds, selected_rng_seeds, n_iters, output_path)
+    iteration_batches = []  
+    if n_iter < 100000:
+        iteration_batches = [n_iter]
+    else:
+        iteration_batches = [n_iter - 10000*9] + [10000]*9
+    
+    for iter_per_batch in iteration_batches:
+        n_iters = [iter_per_batch]*n_chains
+
+        result = largeScaleChain_mp(n_chains, n_workers, largeScaleChain, rf1, initial_beds, selected_rng_seeds, n_iters, output_path)
