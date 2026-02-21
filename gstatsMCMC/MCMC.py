@@ -1406,10 +1406,32 @@ class chain_crf(chain):
                 if i%info_per_iter == 0 or i == 1 or i == n_iter - 1:
                     move_cursor_to_line(output_line)
                     clear_line()
-                    progress = i / (n_iter - 1) * 100
+                    
+                    # Calculate progress
+                    progress = i / (n_iter - 1)
+                    progress_pct = progress * 100
                     elapsed = time.time() - iter_start_time
                     iter_per_sec = i / elapsed if elapsed > 0 else 0
-                    print(f'Chain {chain_id}: {progress:.1f}% | i: {i} | mc loss: {loss_mc_cache[i]:.3e} | loss: {loss_cache[i]:.3e} | acc: {np.sum(step_cache)/(i+1):.4f} | it/s: {iter_per_sec:.2f} | seed: {str(seed)[:6]}', end='')
+                    
+                    # Calculate ETA
+                    if iter_per_sec > 0:
+                        remaining_iters = n_iter - i
+                        eta_seconds = remaining_iters / iter_per_sec
+                        eta_hours = int(eta_seconds // 3600)
+                        eta_minutes = int((eta_seconds % 3600) // 60)
+                        eta_secs = int(eta_seconds % 60)
+                        eta_str = f"{eta_hours:02d}:{eta_minutes:02d}:{eta_secs:02d}"
+                    else:
+                        eta_str = "--:--:--"
+                    
+                    # Create visual progress bar
+                    bar_length = 10
+                    filled_length = int(bar_length * progress)
+                    bar = '█' * filled_length + '▍' * (1 if filled_length < bar_length and progress > 0 else 0)
+                    bar = bar.ljust(bar_length)
+                    
+                    # Format output
+                    print(f'Chain {chain_id} ({str(seed)[:6]}): {progress_pct:3.0f}%|{bar}| ETA: {eta_str} | it/s: {iter_per_sec:6.2f} | n: {n_iter:{len(str(n_iter))}d} | loss: {loss_cache[i]:.3e} | acc: {np.sum(step_cache)/(i+1):.4f}', end='')
                     sys.stdout.flush()
 
             # Calculate acceptance rate for plot
@@ -1847,10 +1869,32 @@ class chain_sgs(chain):
                 if i%info_per_iter == 0 or i == 1 or i == n_iter - 1:
                     move_cursor_to_line(output_line)
                     clear_line()
-                    progress = i / (n_iter - 1) * 100
+                    
+                    # Calculate progress
+                    progress = i / (n_iter - 1)
+                    progress_pct = progress * 100
                     elapsed = time.time() - iter_start_time
                     iter_per_sec = i / elapsed if elapsed > 0 else 0
-                    print(f'Chain {chain_id}: {progress:.1f}% | i: {i} | mc loss: {loss_mc_cache[i]:.3e} | loss: {loss_cache[i]:.3e} | acc: {np.sum(step_cache)/(i+1):.4f} | it/s: {iter_per_sec:.2f} | seed: {str(seed)[:6]}', end='')
+                    
+                    # Calculate ETA
+                    if iter_per_sec > 0:
+                        remaining_iters = n_iter - i
+                        eta_seconds = remaining_iters / iter_per_sec
+                        eta_hours = int(eta_seconds // 3600)
+                        eta_minutes = int((eta_seconds % 3600) // 60)
+                        eta_secs = int(eta_seconds % 60)
+                        eta_str = f"{eta_hours:02d}:{eta_minutes:02d}:{eta_secs:02d}"
+                    else:
+                        eta_str = "--:--:--"
+                    
+                    # Create visual progress bar
+                    bar_length = 10
+                    filled_length = int(bar_length * progress)
+                    bar = '█' * filled_length + '▍' * (1 if filled_length < bar_length and progress > 0 else 0)
+                    bar = bar.ljust(bar_length)
+                    
+                    # Format output
+                    print(f'Chain {chain_id} ({str(seed)[:6]}): {progress_pct:3.0f}%|{bar}| ETA: {eta_str} | it/s: {iter_per_sec:6.2f} | n: {n_iter:{len(str(n_iter))}d} | loss: {loss_cache[i]:.3e} | acc: {np.sum(step_cache)/(i+1):.4f}', end='')
                     sys.stdout.flush()
 
             # Calculate acceptance rate for plot
