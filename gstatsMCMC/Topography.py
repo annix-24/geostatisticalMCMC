@@ -18,7 +18,6 @@ import csv
 import gstatsim as gs
 from PIL import Image, ImageFilter
 from .Utilities import _interpolate
-    
 
 """load surface mass balance data from the smb data from https://doi.org/10.5194/tc-12-1479-2018 and https://www.projects.science.uu.nl/iceclimate/publications/data/2018/vwessem2018_tc/RACMO_Yearly/
 
