@@ -447,7 +447,7 @@ if __name__ == '__main__':
 
     # Index range of LSCs to run SSCs for (0-9 inclusive)
     lsc_starting_idx = 0
-    lsc_ending_idx = 0
+    lsc_ending_idx = 4
 
     #NOTE n_chains is calculated by subtracting the starting index from the ending index
     n_workers = psutil.cpu_count(logical=False)-1
