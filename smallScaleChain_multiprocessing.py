@@ -447,7 +447,7 @@ if __name__ == '__main__':
 
     # Index range of LSCs to run SSCs for (0-9 inclusive)
     lsc_starting_idx = 0
-    lsc_ending_idx = 4
+    lsc_ending_idx = 0
 
     #NOTE n_chains is calculated by subtracting the starting index from the ending index
     n_workers = psutil.cpu_count(logical=False)-1
@@ -586,6 +586,9 @@ if __name__ == '__main__':
     # Notice: because we randomly drop out some data, the calculation of V1_p won't always obtain the same result
     # To ensure reproducibility of your work, please use a consistent set of V1_p throughout different chains
     V1_p = V1.parameters
+    #Variogram parameters manually reset at Niya's suggestion
+    V1_p[2] = 2
+    V1_p[0] = 13000
 
     grounded_ice_mask = (bedmap_mask == 1)
 
@@ -600,13 +603,13 @@ if __name__ == '__main__':
         bedmachine_bed, bedmap_surf, velx, vely, dhdt, smb, resolution)
 
     # in multiprocessing, we choose to only use mass flux residual loss in squared sum (Gaussian distribution)
-    smallScaleChain.set_loss_type(sigma_mc=5, massConvInRegion=True)
+    smallScaleChain.set_loss_type(sigma_mc=6, massConvInRegion=True) #updated sigma_mc value
 
-    # set up the block sizes
-    min_block_x = 5
-    max_block_x = 20
-    min_block_y = 5
-    max_block_y = 20
+    # updated block sizes
+    min_block_x = 2
+    max_block_x = 8
+    min_block_y = 2
+    max_block_y = 8
     smallScaleChain.set_block_sizes(
         min_block_x, max_block_x, min_block_y, max_block_y)
 
